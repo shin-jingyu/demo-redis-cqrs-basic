@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -24,7 +25,9 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "pet_fair")
+@Builder
 public class PetFair {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +52,16 @@ public class PetFair {
     private PetFairStatus status;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-    @OneToMany(mappedBy="petFairImageId", cascade = CascadeType.PERSIST)
+
+    @BatchSize(size = 30)
+    @OneToMany(mappedBy="petFairImageId", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<PetFairImage> pairImages = new ArrayList<>();
+
+    public void addImage(PetFairImage image) {
+        if (pairImages == null) {
+            this.pairImages = new ArrayList<>();
+        }
+        pairImages.add(image);
+        image.setPetFair(this);
+    }
 }

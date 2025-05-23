@@ -10,18 +10,24 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.ZonedDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name= "pet_fair_image")
+@Builder
 public class PetFairImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petFairImageId;
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_fair_id")
     private PetFair petFair;;
