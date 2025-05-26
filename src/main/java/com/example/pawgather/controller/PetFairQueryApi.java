@@ -1,7 +1,7 @@
 package com.example.pawgather.controller;
 
-import com.example.pawgather.domain.entity.PetFair;
-import com.example.pawgather.repository.PetFairJpaRepository;
+import com.example.pawgather.domain.entity.PetFairRead;
+import com.example.pawgather.repository.PetFairReadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class PetFairQueryApi {
-    private final PetFairJpaRepository petfairJpaRepository;
+    private final PetFairReadRepository petFairReadRepository;
 
     @GetMapping("/v1/petfairs")
-    public List<PetFair> readAllPetFairs(@RequestParam(required = false) String searchword,
-                                         @RequestParam(required = false, defaultValue = "DESC") String filter) {
-        return petfairJpaRepository.findAll();
+    public List<PetFairRead> readAllPetFairs(@RequestParam(required = false) String searchword,
+                                             @RequestParam(required = false, defaultValue = "DESC") String filter) {
+        return petFairReadRepository.findAll();
     }
 }
