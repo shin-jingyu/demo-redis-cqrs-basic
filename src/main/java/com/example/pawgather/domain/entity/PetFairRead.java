@@ -1,6 +1,5 @@
 package com.example.pawgather.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,17 +14,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.aspectj.weaver.loadtime.definition.Definition;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "pet_fair_read")
 @Builder
 public class PetFairRead {
@@ -35,9 +33,9 @@ public class PetFairRead {
     private String title;
     private String posterImageUrl;
     @Column(nullable = false)
-    private ZonedDateTime startDate;
+    private Instant startDate;
     @Column(nullable = false)
-    private ZonedDateTime endDate;
+    private Instant endDate;
     private String simpleAddress;
     private String detailAddress;
     @Lob
@@ -49,8 +47,8 @@ public class PetFairRead {
     private String telNumber;
     @Enumerated(EnumType.STRING)
     private PetFairStatus status;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<String> images;

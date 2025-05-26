@@ -16,12 +16,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name= "pet_fair_image")
 @Builder
 public class PetFairImage {
@@ -34,5 +34,5 @@ public class PetFairImage {
     @Column(nullable = false)
     private String imageUrl;
     private Integer sortOrder;
-    private ZonedDateTime createdAt;
+    private Instant createdAt;
 }

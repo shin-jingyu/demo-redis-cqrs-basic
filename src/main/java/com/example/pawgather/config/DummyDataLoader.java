@@ -5,15 +5,14 @@ import com.example.pawgather.domain.entity.PetFairImage;
 import com.example.pawgather.domain.entity.PetFairRead;
 import com.example.pawgather.domain.entity.PetFairStatus;
 import com.example.pawgather.repository.PetFairReadRepository;
-import com.example.pawgather.repository.PetfairJpaRepository;
+import com.example.pawgather.repository.PetFairJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
 @Slf4j
 public class DummyDataLoader implements ApplicationRunner {
 
-    private final PetfairJpaRepository petfairJpaRepository;
+    private final PetFairJpaRepository petfairJpaRepository;
     private final PetFairReadRepository petFairReadRepository;
 
     @Override
@@ -58,8 +57,8 @@ public class DummyDataLoader implements ApplicationRunner {
         PetFair fair = PetFair.builder()
                 .title(title)
                 .posterImageUrl(posterUrl)
-                .startDate(ZonedDateTime.parse(start))
-                .endDate(ZonedDateTime.parse(end))
+                .startDate(Instant.parse(start))
+                .endDate(Instant.parse(end))
                 .simpleAddress(sAddr)
                 .detailAddress(dAddr)
                 .petFairUrl(url)
@@ -67,20 +66,19 @@ public class DummyDataLoader implements ApplicationRunner {
                 .mapUrl("37.514575,127.063287")
                 .telNumber("02-6121-6247")
                 .status(PetFairStatus.ACTIVE)
-                .createdAt(ZonedDateTime.now())
-                .updatedAt(ZonedDateTime.now())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
                 .build();
 
         for (int sort = 1; sort <= 5; sort++) {
             PetFairImage img = PetFairImage.builder()
                     .imageUrl("images/content/2025/05/26/" + imageIndex + "_" + sort + ".webp")
                     .sortOrder(sort)
-                    .createdAt(ZonedDateTime.now())
+                    .createdAt(Instant.now())
                     .build();
 
             fair.addImage(img);
         }
-
 
         return fair;
     }

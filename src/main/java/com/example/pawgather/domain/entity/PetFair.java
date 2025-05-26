@@ -18,14 +18,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "pet_fair")
 @Builder
 public class PetFair {
@@ -36,9 +36,9 @@ public class PetFair {
     private String title;
     private String posterImageUrl;
     @Column(nullable = false)
-    private ZonedDateTime startDate;
+    private Instant startDate;
     @Column(nullable = false)
-    private ZonedDateTime endDate;
+    private Instant endDate;
     private String simpleAddress;
     private String detailAddress;
     @Column(columnDefinition = "text")
@@ -50,11 +50,11 @@ public class PetFair {
     private String telNumber;
     @Enumerated(EnumType.STRING)
     private PetFairStatus status;
-    private ZonedDateTime createdAt;
-    private ZonedDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @BatchSize(size = 30)
-    @OneToMany(mappedBy="petFairImageId", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy="petFairImageId", cascade = CascadeType.PERSIST)
     private List<PetFairImage> pairImages = new ArrayList<>();
 
     public void addImage(PetFairImage image) {

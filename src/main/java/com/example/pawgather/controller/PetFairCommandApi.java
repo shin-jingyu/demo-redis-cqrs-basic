@@ -1,7 +1,7 @@
 package com.example.pawgather.controller;
 
 import com.example.pawgather.domain.entity.PetFair;
-import com.example.pawgather.repository.PetfairJpaRepository;
+import com.example.pawgather.repository.PetFairJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class PetFairCommandApi {
-    private final PetfairJpaRepository petfairJpaRepository;
+    private final PetFairJpaRepository petfairJpaRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
