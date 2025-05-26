@@ -17,7 +17,7 @@ public class PetFairQueryApi {
     private final PetFairJpaRepository petfairJpaRepository;
 
     @GetMapping("/v1/petfairs")
-    public List<PetFair> readAllPetFairs(@RequestParam(required = false) String searchword,
+    public List<PetFair> readAllPetFairs(@RequestParam(required = false) String kowrd,
                                          @RequestParam(required = false, defaultValue = "DESC") String filter) {
         return petfairJpaRepository.findAll();
     }
