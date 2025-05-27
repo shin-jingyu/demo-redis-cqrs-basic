@@ -1,7 +1,7 @@
 package com.example.pawgather.controller;
 
 import com.example.pawgather.domain.entity.PetFairRead;
-import com.example.pawgather.service.PetFairReadService;
+import com.example.pawgather.usecase.PetFairReadUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,16 +16,16 @@ import static com.example.pawgather.controller.dto.PetFairQueryDto.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class PetFairQueryApi {
-    private final PetFairReadService petFairReadService;
+    private final PetFairReadUseCase petFairReadUseCase;
 
     @GetMapping("/v1/petfairs")
     public List<PetFairRead> readAllPetFairs(@RequestParam(required = false) String searchword,
                                              @RequestParam(required = false, defaultValue = "DESC") String filter) {
-        return petFairReadService.readAllPetFair();
+        return petFairReadUseCase.readAllPetFair();
     }
 
     @GetMapping("/v1/home")
     public List<PetFairSelectLimitResponse> readPetFairPosterTop10() {
-        return petFairReadService.readLimitPetFairPoster();
+        return petFairReadUseCase.readLimitPetFairPoster();
     }
 }
