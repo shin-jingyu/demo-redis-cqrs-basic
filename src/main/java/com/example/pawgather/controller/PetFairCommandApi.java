@@ -23,6 +23,7 @@ public class PetFairCommandApi {
     @ResponseStatus(HttpStatus.CREATED)
     public RedirectView createPetFair(@RequestBody PetFair petfair) {
         petfairJpaRepository.save(petfair);
+
         return new RedirectView("/api/v1/petfairs");
     }
 
