@@ -7,23 +7,20 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository
-public class PatFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
+public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
 
-    private final EntityManager em;
-    private final JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+    private final JPAQueryFactory queryFactory;
 
     QPetFairRead qPetFairRead = QPetFairRead.petFairRead;
 
     @Override
-    public List<PetFairRead> findList(PetFairSearchList searchList) {
+    public List<PetFairRead> findPetFeirList(PetFairSearchList searchList) {
         return queryFactory
                 .select(Projections.constructor(PetFairRead.class,
                         qPetFairRead.petFairId,
@@ -46,25 +43,28 @@ public class PatFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
     private BooleanExpression cursorCondition(String cursor, String sort) {
         if (cursor == null) return null;
 
-        Long cursorId = Long.parseLong(cursor);
-
-        // sort가 ASC인 경우 → id가 더 큰 걸 가져와야 오래된 순으로 다음 페이지
-        if ("ASC".equalsIgnoreCase(sort)) {
-            return qPetFairRead.petFairId.gt(cursorId); // 오래된 순
-        } else {
-            return qPetFairRead.petFairId.lt(cursorId); // 최신순
+        Instant cursorDate;
+        try {
+            cursorDate = Instant.parse(cursor);
+        } catch (Exception e) {
+            return null;
         }
+
+        return "ASC".equalsIgnoreCase(sort)
+                ? qPetFairRead.startDate.gt(cursorDate)
+                : qPetFairRead.startDate.lt(cursorDate);
     }
 
 
     private OrderSpecifier<?> sortCondition(String sort) {
-        if ("ASC".equalsIgnoreCase(sort)) {
-            return qPetFairRead.startDate.asc(); // 오래된 순
-        } else {
-            return qPetFairRead.startDate.desc(); // 최신순 (기본)
-        }
+        return "ASC".equalsIgnoreCase(sort)
+                ? qPetFairRead.startDate.asc()
+                : qPetFairRead.startDate.desc();
     }
+
     private BooleanExpression keywordValue(String keyword) {
-        return keyword == null ? null : qPetFairRead.title.containsIgnoreCase(keyword);
+        return (keyword != null && !keyword.isBlank())
+                ? qPetFairRead.title.containsIgnoreCase(keyword)
+                : null;
     }
 }

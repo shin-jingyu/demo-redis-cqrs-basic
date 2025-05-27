@@ -1,11 +1,11 @@
 package com.example.pawgather.controller;
 
-import com.example.pawgather.domain.entity.PetFair;
-import com.example.pawgather.repository.PetFairJpaRepository;
+import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
+import com.example.pawgather.usecase.PetFairReadUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class PetFairQueryApi {
-    private final PetFairJpaRepository petfairJpaRepository;
+
+    private final PetFairReadUseCase petFairReadUseCase;
 
     @GetMapping("/v1/petfairs")
-    public List<PetFair> readAllPetFairs(@RequestParam(required = false) String kowrd,
-                                         @RequestParam(required = false, defaultValue = "DESC") String filter) {
-        return petfairJpaRepository.findAll();
+    public List<PetFairSummaryDto> readAllPetFairs(PetFairSearchList petFairSearchList) {
+        return petFairReadUseCase.readPetFairs(petFairSearchList);
     }
 }
