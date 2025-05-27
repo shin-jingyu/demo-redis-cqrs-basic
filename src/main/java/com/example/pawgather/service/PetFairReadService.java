@@ -1,12 +1,15 @@
 package com.example.pawgather.service;
 
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
-import com.example.pawgather.controller.dto.PerFairQueryResponseDto;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDetailDto;
 import com.example.pawgather.mapper.PetFairQueryMapper;
 import com.example.pawgather.repository.PetFairReadRepository;
 import com.example.pawgather.usecase.PetFairReadUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,12 +22,19 @@ public class PetFairReadService implements PetFairReadUseCase {
     private final PetFairQueryMapper petFairQueryMapper;
 
     @Override
-    public List<PerFairQueryResponseDto.PetFairSummaryDto> readPetFairs(PetFairSearchList petFairSearchList) {
+    public List<PetFairSummaryDto> readPetFairs(PetFairSearchList petFairSearchList) {
 
         var PetFairs = petFairReadRepository.findPetFeirList(petFairSearchList);
 
         return PetFairs.stream()
                 .map(petFairQueryMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public PetFairSummaryDetailDto readPetFairSummary(Long petFairId) {
+        var petFairRead = petFairReadRepository.findById(petFairId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 PetFair를 찾을 수 없습니다.") );
+        return petFairQueryMapper.toDetailDto(petFairRead);
     }
 }
