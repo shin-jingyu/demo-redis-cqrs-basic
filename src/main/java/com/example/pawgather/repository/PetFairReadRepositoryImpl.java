@@ -6,6 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;
 
+import static com.example.pawgather.domain.constant.Constants.HOME_POSTER_IMAGE_COUNT;
+
 public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
@@ -21,7 +23,7 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom{
         return queryFactory
                 .selectFrom(petFair)
                 .orderBy(petFair.startDate.desc())
-                .limit(10)
+                .limit(HOME_POSTER_IMAGE_COUNT)
                 .fetch();
     }
 }
