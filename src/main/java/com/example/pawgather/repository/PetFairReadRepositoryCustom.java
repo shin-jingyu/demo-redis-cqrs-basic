@@ -6,5 +6,5 @@ import com.example.pawgather.domain.entity.PetFairRead;
 import java.util.List;
 
 public interface PetFairReadRepositoryCustom {
-    List<PetFairRead> findPetFeirList(PetFairSearchList searchList);
+    List<PetFairRead> findPetFairList(PetFairSearchList searchList);
 }
