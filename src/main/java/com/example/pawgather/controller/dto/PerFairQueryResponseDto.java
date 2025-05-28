@@ -1,12 +1,6 @@
 package com.example.pawgather.controller.dto;
 
 import com.example.pawgather.domain.entity.PetFairStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Lob;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.List;
@@ -22,7 +16,7 @@ public final class PerFairQueryResponseDto {
              String simpleAddress
     ) {}
 
-    public record PetFairSummaryDetailDto(
+    public record PetFairDetailDto(
             Long petFairId,
             String title,
             String posterImageUrl,

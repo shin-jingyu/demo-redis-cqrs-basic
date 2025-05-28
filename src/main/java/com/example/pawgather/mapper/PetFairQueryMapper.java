@@ -1,7 +1,7 @@
 package com.example.pawgather.mapper;
 
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
-import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDetailDto;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
 import com.example.pawgather.domain.entity.PetFairRead;
 import org.mapstruct.Mapper;
 
@@ -9,5 +9,5 @@ import org.mapstruct.Mapper;
 public interface PetFairQueryMapper {
 
     PetFairSummaryDto toDto(PetFairRead petFairRead);
-    PetFairSummaryDetailDto toDetailDto(PetFairRead petFairRead);
+    PetFairDetailDto toDetailDto(PetFairRead petFairRead);
 }

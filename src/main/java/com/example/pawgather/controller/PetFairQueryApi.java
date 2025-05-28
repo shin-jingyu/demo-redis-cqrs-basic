@@ -2,7 +2,7 @@ package com.example.pawgather.controller;
 
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
-import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDetailDto;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
 import com.example.pawgather.usecase.PetFairReadUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +25,7 @@ public class PetFairQueryApi {
     }
 
     @GetMapping("/v1/petfairs/{id}")
-    public PetFairSummaryDetailDto readDetailPetFair(@PathVariable("id") Long id) {
+    public PetFairDetailDto readDetailPetFair(@PathVariable("id") Long id) {
         return petFairReadUseCase.readPetFairSummary(id);
     }
 }

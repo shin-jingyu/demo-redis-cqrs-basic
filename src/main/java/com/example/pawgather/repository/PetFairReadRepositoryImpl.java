@@ -20,7 +20,7 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
     QPetFairRead qPetFairRead = QPetFairRead.petFairRead;
 
     @Override
-    public List<PetFairRead> findPetFeirList(PetFairSearchList searchList) {
+    public List<PetFairRead> findPetFairList(PetFairSearchList searchList) {
         return queryFactory
                 .select(Projections.constructor(PetFairRead.class,
                         qPetFairRead.petFairId,
