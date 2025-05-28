@@ -52,4 +52,14 @@ public class PetFairRead {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<String> images;
+
+    public PetFairRead(Long petFairId, String title, String posterImageUrl,
+                       Instant startDate, Instant endDate, String simpleAddress) {
+        this.petFairId = petFairId;
+        this.title = title;
+        this.posterImageUrl = posterImageUrl;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.simpleAddress = simpleAddress;
+    }
 }
