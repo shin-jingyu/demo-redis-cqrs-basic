@@ -1,7 +1,7 @@
 package com.example.pawgather.service;
 
-import com.example.pawgather.controller.dto.PetFairQueryDto.PetFairSelectLimitResponse;
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairPosterSelectLimitDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
 import com.example.pawgather.domain.entity.PetFairRead;
@@ -43,11 +43,11 @@ public class PetFairReadService implements PetFairReadUseCase {
     }
 
     @Override
-    public List<PetFairSelectLimitResponse> readLimitPetFairPoster() {
+    public List<PetFairPosterSelectLimitDto> readLimitPetFairPoster() {
         List<PetFairRead> petFairReads = petFairReadRepository.findMainPagePoster();
 
         return petFairReads.stream()
-                .map(mapper::toMainPostersResponse)
+                .map(petFairQueryMapper::toMainPostersDto)
                 .toList();
     }
 }

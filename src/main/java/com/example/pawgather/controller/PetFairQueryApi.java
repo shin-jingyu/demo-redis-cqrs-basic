@@ -1,6 +1,7 @@
 package com.example.pawgather.controller;
 
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairPosterSelectLimitDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
 import com.example.pawgather.usecase.PetFairReadUseCase;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import static com.example.pawgather.controller.dto.PetFairQueryDto.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +31,7 @@ public class PetFairQueryApi {
     }
 
     @GetMapping("/v1/home")
-    public List<PetFairSelectLimitResponse> readPetFairPosterTop10() {
+    public List<PetFairPosterSelectLimitDto> readPetFairPosterTop10() {
         return petFairReadUseCase.readLimitPetFairPoster();
+    }
 }
