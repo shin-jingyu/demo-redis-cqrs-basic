@@ -55,7 +55,7 @@ public class PetFair {
 
     @Builder.Default
     @BatchSize(size = 30)
-    @OneToMany(mappedBy="petFairImageId", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="petFairImageId", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<PetFairImage> pairImages = new ArrayList<>();
 
     public void addImage(PetFairImage image) {
