@@ -49,7 +49,7 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
                         cursorCondition(searchList.cursor(), searchList.sort())
                 )
                 .orderBy(sortCondition(searchList.sort()))
-                .limit(10)
+                .limit(HOME_POSTER_IMAGE_COUNT)
                 .fetch();
     }
 
