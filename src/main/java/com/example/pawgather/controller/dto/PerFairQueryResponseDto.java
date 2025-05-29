@@ -33,4 +33,9 @@ public final class PerFairQueryResponseDto {
             Instant updatedAt,
             List<String> images
     ) {}
+
+    public record PetFairPosterSelectLimitDto(
+            Long id,
+            String posterImageUrl
+    ) {}
 }

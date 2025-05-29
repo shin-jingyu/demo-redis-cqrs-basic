@@ -12,12 +12,25 @@ import lombok.RequiredArgsConstructor;
 import java.time.Instant;
 import java.util.List;
 
+import static com.example.pawgather.domain.constant.Constants.HOME_POSTER_IMAGE_COUNT;
+
 @RequiredArgsConstructor
 public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
     QPetFairRead qPetFairRead = QPetFairRead.petFairRead;
+
+    @Override
+    public List<PetFairRead> findMainPagePoster() {
+        QPetFairRead petFair = QPetFairRead.petFairRead;
+
+        return queryFactory
+                .selectFrom(petFair)
+                .orderBy(petFair.startDate.desc())
+                .limit(HOME_POSTER_IMAGE_COUNT)
+                .fetch();
+    }
 
     @Override
     public List<PetFairRead> findPetFairList(PetFairSearchList searchList) {
@@ -36,7 +49,7 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
                         cursorCondition(searchList.cursor(), searchList.sort())
                 )
                 .orderBy(sortCondition(searchList.sort()))
-                .limit(10)
+                .limit(HOME_POSTER_IMAGE_COUNT)
                 .fetch();
     }
 

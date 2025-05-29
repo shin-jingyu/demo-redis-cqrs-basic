@@ -1,8 +1,10 @@
 package com.example.pawgather.service;
 
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairPosterSelectLimitDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
+import com.example.pawgather.domain.entity.PetFairRead;
 import com.example.pawgather.mapper.PetFairQueryMapper;
 import com.example.pawgather.repository.PetFairReadRepository;
 import com.example.pawgather.usecase.PetFairReadUseCase;
@@ -38,5 +40,14 @@ public class PetFairReadService implements PetFairReadUseCase {
         var petFairRead = petFairReadRepository.findById(petFairId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 PetFair를 찾을 수 없습니다.") );
         return petFairQueryMapper.toDetailDto(petFairRead);
+    }
+
+    @Override
+    public List<PetFairPosterSelectLimitDto> readLimitPetFairPoster() {
+        List<PetFairRead> petFairReads = petFairReadRepository.findMainPagePoster();
+
+        return petFairReads.stream()
+                .map(petFairQueryMapper::toMainPostersDto)
+                .toList();
     }
 }

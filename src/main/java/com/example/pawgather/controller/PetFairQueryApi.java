@@ -1,6 +1,7 @@
 package com.example.pawgather.controller;
 
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairPosterSelectLimitDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
 import com.example.pawgather.usecase.PetFairReadUseCase;
@@ -27,5 +28,10 @@ public class PetFairQueryApi {
     @GetMapping("/v1/petfairs/{id}")
     public PetFairDetailDto readDetailPetFair(@PathVariable("id") Long id) {
         return petFairReadUseCase.readPetFairSummary(id);
+    }
+
+    @GetMapping("/v1/home")
+    public List<PetFairPosterSelectLimitDto> readPetFairPosterTop10() {
+        return petFairReadUseCase.readLimitPetFairPoster();
     }
 }

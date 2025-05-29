@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PetFairReadRepositoryCustom {
     List<PetFairRead> findPetFairList(PetFairSearchList searchList);
+    List<PetFairRead> findMainPagePoster();
 }
