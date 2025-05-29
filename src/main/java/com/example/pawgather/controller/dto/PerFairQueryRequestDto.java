@@ -7,4 +7,9 @@ public final class PerFairQueryRequestDto {
             String sort,
             String cursor
     ) {}
+
+    public record PetFairSearchDate(
+            String date,
+            String zone
+    ) {}
 }

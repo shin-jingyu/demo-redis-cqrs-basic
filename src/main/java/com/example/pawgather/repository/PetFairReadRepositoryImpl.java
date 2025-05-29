@@ -22,6 +22,15 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
     QPetFairRead qPetFairRead = QPetFairRead.petFairRead;
 
     @Override
+    public List<PetFairRead> findMonthPetParis(Instant start, Instant end) {
+        return queryFactory
+                .selectFrom(qPetFairRead)
+                .where(qPetFairRead.startDate.goe(start)
+                        .and(qPetFairRead.startDate.lt(end)))
+                .fetch();
+    }
+
+    @Override
     public List<PetFairRead> findMainPagePoster() {
         QPetFairRead petFair = QPetFairRead.petFairRead;
 
