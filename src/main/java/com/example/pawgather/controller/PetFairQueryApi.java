@@ -32,7 +32,7 @@ public class PetFairQueryApi {
     }
 
     @GetMapping("/v1/home")
-    public List<PetFairPosterSelectLimitDto> readPetFairPosterTop10() {
+    public List<PetFairPosterSelectLimitDto> readLimitPetFairPoster() {
         return petFairReadUseCase.readLimitPetFairPoster();
     }
 
