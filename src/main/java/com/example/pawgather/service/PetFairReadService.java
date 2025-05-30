@@ -1,5 +1,6 @@
 package com.example.pawgather.service;
 
+import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchDate;
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairPosterSelectLimitDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
@@ -14,6 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,5 +55,32 @@ public class PetFairReadService implements PetFairReadUseCase {
         return petFairReads.stream()
                 .map(petFairQueryMapper::toMainPostersDto)
                 .toList();
+    }
+
+    @Override
+    public List<PetFairDetailDto> readMonthPetFairs(PetFairSearchDate searchDate) {
+        List<Instant> dates = new ArrayList<>();
+
+        List<Instant> searchMonthStartEnd = calStartEndDate(searchDate, dates);
+        Instant start = searchMonthStartEnd.getFirst();
+        Instant end = searchMonthStartEnd.getLast();
+
+        List<PetFairRead> result = petFairReadRepository.findMonthPetParis(start, end);
+
+        return result.stream()
+                .map(petFairQueryMapper::toDetailDto)
+                .toList();
+    }
+
+    private List<Instant> calStartEndDate(PetFairSearchDate searchDate, List<Instant> dates) {
+        YearMonth yearMonth = YearMonth.parse(searchDate.date());
+        LocalDate yearMonthDay = yearMonth.atDay(1);
+        Instant monthFirstDay = yearMonthDay.atStartOfDay(ZoneId.of(searchDate.zone())).toInstant();
+        Instant nextMonthFirstDay = yearMonthDay.atStartOfDay(ZoneId.of(searchDate.zone())).plusMonths(1).toInstant();
+
+        dates.add(monthFirstDay);
+        dates.add(nextMonthFirstDay);
+
+        return dates;
     }
 }
