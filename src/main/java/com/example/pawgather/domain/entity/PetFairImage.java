@@ -30,7 +30,7 @@ public class PetFairImage {
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_fair_id")
-    private PetFair petFair;;
+    private PetFair petFair;
     @Column(nullable = false)
     private String imageUrl;
     private Integer sortOrder;
