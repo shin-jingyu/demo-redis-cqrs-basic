@@ -7,7 +7,6 @@ services:
       - '6379:6379'
     environment:
       - VALKEY_PASSWORD=root
-      - VALKEY_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     volumes:
       - sticky_volume_demo-valkey:/bitnami/valkey/data
 

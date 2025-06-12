@@ -41,9 +41,10 @@ dependencies {
 
 	// db
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
-	runtimeOnly ("org.springframework.boot:spring-boot-starter-data-redis")
+
 
 	// querydsl
 	implementation("com.querydsl:querydsl-jpa:${dependencyManagement.importedProperties["querydsl.version"]}:jakarta")
