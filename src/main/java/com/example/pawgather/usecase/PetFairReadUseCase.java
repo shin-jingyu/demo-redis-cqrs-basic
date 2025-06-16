@@ -6,12 +6,13 @@ import com.example.pawgather.controller.dto.PerFairQueryResponseDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairPosterSelectLimitDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
+import com.example.pawgather.controller.dto.PetFairReadDto;
 
 import java.util.List;
 
 public interface PetFairReadUseCase {
     List<PetFairSummaryDto> readPetFairs(PetFairSearchList petFairSearchList);
-    PerFairQueryResponseDto.PetFairDetailDto readPetFairSummary(Long petFairId);
-    List<PetFairPosterSelectLimitDto> readLimitPetFairPoster();
+    PetFairReadDto readPetFairSummary(Long petFairId);
+    List<PetFairReadDto> readLimitPetFairPoster();
     List<PetFairDetailDto> readMonthPetFairs(PetFairSearchDate petFairSearchDate);
 }

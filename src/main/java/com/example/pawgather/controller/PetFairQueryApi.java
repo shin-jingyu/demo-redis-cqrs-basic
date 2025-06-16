@@ -5,6 +5,7 @@ import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearch
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairPosterSelectLimitDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairSummaryDto;
 import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetailDto;
+import com.example.pawgather.controller.dto.PetFairReadDto;
 import com.example.pawgather.usecase.PetFairReadUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,12 +28,12 @@ public class PetFairQueryApi {
     }
 
     @GetMapping("/v1/petfairs/{id}")
-    public PetFairDetailDto readDetailPetFair(@PathVariable("id") Long id) {
+    public PetFairReadDto readDetailPetFair(@PathVariable("id") Long id) {
         return petFairReadUseCase.readPetFairSummary(id);
     }
 
     @GetMapping("/v1/home")
-    public List<PetFairPosterSelectLimitDto> readLimitPetFairPoster() {
+    public List<PetFairReadDto> readLimitPetFairPoster() {
         return petFairReadUseCase.readLimitPetFairPoster();
     }
 

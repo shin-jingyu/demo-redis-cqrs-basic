@@ -6,6 +6,8 @@ import com.example.pawgather.domain.entity.PetFairImage;
 import com.example.pawgather.domain.entity.PetFairStatus;
 import com.example.pawgather.mapper.PetFairReadMapper;
 import com.example.pawgather.repository.PetFairJpaRepository;
+import com.example.pawgather.repository.PetFairReadRepository;
+import com.example.pawgather.repository.redis.PetFairRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -24,8 +26,7 @@ public class DummyDataLoader implements ApplicationRunner {
 
     private final PetFairReadMapper petFairReadMapper;
     private final PetFairJpaRepository petfairJpaRepository;
-//    private final PetFairReadRepository petFairReadRepository;
-    private final RedisTemplate<String, PetFairReadDto> redisTemplate;
+    private final PetFairRedisRepository petFairRedisRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -54,13 +55,11 @@ public class DummyDataLoader implements ApplicationRunner {
 //
 //        petFairReadRepository.saveAll(readList);
 //        log.info("readList: {}", readList.size());
-        List<PetFairReadDto> dtoList = new ArrayList<>();
-        dummyList.forEach(fair -> {
-            PetFairReadDto dto = petFairReadMapper.toDto(fair);
-            dtoList.add(dto);
-            redisTemplate.opsForValue().set("petfair:" + fair.getPetFairId(), dto);
-        });
-        redisTemplate.opsForValue().set("petfair:list", dtoList);
+        List<PetFairReadDto> dtoList = dummyList.stream()
+                .map(petFairReadMapper::toDto)
+                .toList();
+
+        petFairRedisRepository.saveAll(dtoList);
     }
 
     private PetFair makeFair(String title, String posterUrl, String start, String end, String sAddr, String dAddr, String url, String content, int imageIndex) {

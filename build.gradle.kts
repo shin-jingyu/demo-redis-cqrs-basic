@@ -23,6 +23,8 @@ repositories {
 	mavenCentral()
 }
 
+
+
 dependencies {
 	// web
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -42,6 +44,10 @@ dependencies {
 	// db
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("com.redis.om:redis-om-spring:0.9.11")
+	implementation ("redis.clients:jedis")
+
+
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
 
