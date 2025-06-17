@@ -8,12 +8,15 @@ import com.example.pawgather.controller.dto.PerFairQueryResponseDto.PetFairDetai
 import com.example.pawgather.controller.dto.PetFairReadDto;
 import com.example.pawgather.domain.entity.PetFairRead;
 import com.example.pawgather.mapper.PetFairQueryMapper;
+import com.example.pawgather.mapper.PetFairReadMapper;
 import com.example.pawgather.repository.PetFairReadRepository;
 import com.example.pawgather.repository.redis.PetFairRedisRepository;
 import com.example.pawgather.usecase.PetFairReadUseCase;
 import com.redis.om.spring.client.RedisModulesClient;
 import com.redis.om.spring.ops.RedisModulesOperations;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,87 +30,93 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class PetFairReadService implements PetFairReadUseCase {
 
-    private final PetFairReadRepository petFairReadRepository;
     private final PetFairRedisRepository petFairRedisRepository;
+    private final PetFairReadMapper petFairReadMapper;
     private final PetFairQueryMapper petFairQueryMapper;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public List<PetFairSummaryDto> readPetFairs(PetFairSearchList petFairSearchList) {
 
-        Instant cursor = petFairSearchList.cursor() != null
-                ? Instant.ofEpochMilli(Long.parseLong(petFairSearchList.cursor()))
-                : Instant.now();
-//        int end = cursor + 10;
+        Sort sort = "ASC".equalsIgnoreCase(petFairSearchList.sort())
+                ? Sort.by(Sort.Direction.ASC, "startDate")
+                : Sort.by(Sort.Direction.DESC, "startDate");
 
-        Sort sort = Sort.by(Sort.Direction.DESC, "startDate");
-        if ("ASC".equalsIgnoreCase(petFairSearchList.sort())) {
-            Sort.by(Sort.Direction.ASC, "startDate");
+        int pageNum = petFairSearchList.pageNumber() != null
+                ? Integer.parseInt(petFairSearchList.pageNumber())
+                : 0;
+
+        Pageable pageable = PageRequest.of(pageNum, 10, sort);
+
+        List<PetFairReadDto> dtos;
+
+        if (petFairSearchList.keyword() != null && !petFairSearchList.keyword().isEmpty()) {
+            dtos = petFairRedisRepository.findByTitleContaining(petFairSearchList.keyword(), pageable);
+        } else {
+            dtos = petFairRedisRepository.findAll(pageable).getContent();
         }
 
-        String keyword = petFairSearchList.keyword();
-
-//        Pageable pageable = PageRequest.of(end, 10, sort);
-
-//        List<PetFairReadDto> readDtoList = petFairRedisRepository
-//                .findByTitleContaining(keyword, pageable)
-//                .getContent();
-
-//        return readDtoList.stream()
-//                .map(petFairQueryMapper::toDto)
-//                .toList();
-        return null;
+        return dtos.stream()
+                .map(petFairReadMapper::toSummaryDto)
+                .toList();
     }
 
     @Override
-    public PetFairReadDto readPetFairSummary(Long petFairId) {
-        String id = petFairId.toString();
-
-        return petFairRedisRepository.findById(id)
+    public PetFairReadDto readPetFairSummary(String petFairId) {
+        return petFairRedisRepository.findById(petFairId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 PetFair를 찾을 수 없습니다."));
     }
 
 
     @Override
-    public List<PetFairReadDto> readLimitPetFairPoster() {
-        return petFairRedisRepository.findAll(
-                        Sort.by(Sort.Direction.DESC, "startDate")
-                ).stream()
-                .limit(10)
+    public List<PetFairPosterSelectLimitDto> readLimitPetFairPoster() {
+        List<PetFairReadDto> dtos = petFairRedisRepository.findTop10ByOrderByStartDateDesc();
+        return dtos.stream()
+                .map(petFairQueryMapper::toPostersDto)
                 .toList();
     }
 
     @Override
-    public List<PetFairDetailDto> readMonthPetFairs(PetFairSearchDate searchDate) {
-        List<Instant> dates = new ArrayList<>();
+    public List<PetFairSummaryDto> readMonthPetFairs(PetFairSearchDate searchDate) {
+        List<Instant> searchMonthStartEnd = calStartEndDate(searchDate);
+        Instant start = searchMonthStartEnd.get(0);
+        Instant end = searchMonthStartEnd.get(1);
 
-        List<Instant> searchMonthStartEnd = calStartEndDate(searchDate, dates);
-        Instant start = searchMonthStartEnd.getFirst();
-        Instant end = searchMonthStartEnd.getLast();
+        // Redis Sorted Set 범위 조회 (score는 epoch milli)
+        Set<String> ids = redisTemplate.opsForZSet()
+                .rangeByScore("petfair:startDate", start.toEpochMilli(), end.toEpochMilli());
+        log.error(ids.toString());
+        log.info("start epoch millis: {}", start.toEpochMilli());
+        log.info("end epoch millis: {}", end.toEpochMilli());
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        List<PetFairRead> result = petFairReadRepository.findMonthPetParis(start, end);
+        List<PetFairReadDto> dtos = petFairRedisRepository.findAllById(ids);
 
-        return result.stream()
-                .map(petFairQueryMapper::toDetailDto)
+        return dtos.stream()
+                .map(petFairReadMapper::toSummaryDto)
                 .toList();
     }
 
-    private List<Instant> calStartEndDate(PetFairSearchDate searchDate, List<Instant> dates) {
+
+    private List<Instant> calStartEndDate(PetFairSearchDate searchDate) {
         YearMonth yearMonth = YearMonth.parse(searchDate.date());
         LocalDate yearMonthDay = yearMonth.atDay(1);
         Instant monthFirstDay = yearMonthDay.atStartOfDay(ZoneId.of(searchDate.zone())).toInstant();
         Instant nextMonthFirstDay = yearMonthDay.atStartOfDay(ZoneId.of(searchDate.zone())).plusMonths(1).toInstant();
 
-        dates.add(monthFirstDay);
-        dates.add(nextMonthFirstDay);
-
-        return dates;
+        return List.of(monthFirstDay, nextMonthFirstDay);
     }
 }

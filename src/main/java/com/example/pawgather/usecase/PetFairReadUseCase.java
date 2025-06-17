@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface PetFairReadUseCase {
     List<PetFairSummaryDto> readPetFairs(PetFairSearchList petFairSearchList);
-    PetFairReadDto readPetFairSummary(Long petFairId);
-    List<PetFairReadDto> readLimitPetFairPoster();
-    List<PetFairDetailDto> readMonthPetFairs(PetFairSearchDate petFairSearchDate);
+    PetFairReadDto readPetFairSummary(String petFairId);
+    List<PetFairPosterSelectLimitDto> readLimitPetFairPoster();
+    List<PetFairSummaryDto> readMonthPetFairs(PetFairSearchDate petFairSearchDate);
 }

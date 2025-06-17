@@ -16,4 +16,5 @@ public interface PetFairQueryMapper {
 
     @Mapping(target = "id", source =  "petFairId")
     PetFairPosterSelectLimitDto toMainPostersDto(PetFairRead entity);
+    PetFairPosterSelectLimitDto toPostersDto(PetFairReadDto petFairReadDto);
 }

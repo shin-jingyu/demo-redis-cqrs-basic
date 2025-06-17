@@ -28,17 +28,17 @@ public class PetFairQueryApi {
     }
 
     @GetMapping("/v1/petfairs/{id}")
-    public PetFairReadDto readDetailPetFair(@PathVariable("id") Long id) {
+    public PetFairReadDto readDetailPetFair(@PathVariable("id") String id) {
         return petFairReadUseCase.readPetFairSummary(id);
     }
 
     @GetMapping("/v1/home")
-    public List<PetFairReadDto> readLimitPetFairPoster() {
+    public List<PetFairPosterSelectLimitDto> readLimitPetFairPoster() {
         return petFairReadUseCase.readLimitPetFairPoster();
     }
 
     @GetMapping("/v1/calendar")
-    public List<PetFairDetailDto> readMonthPetFairs(PetFairSearchDate searchDate) {
+    public List<PetFairSummaryDto> readMonthPetFairs(PetFairSearchDate searchDate) {
         return petFairReadUseCase.readMonthPetFairs(searchDate);
     }
 }

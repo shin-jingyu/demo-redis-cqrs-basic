@@ -1,19 +1,22 @@
 package com.example.pawgather.controller.dto;
 
 import com.example.pawgather.domain.entity.PetFairStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.Instant;
 import java.util.List;
 
 public final class PerFairQueryResponseDto {
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public record PetFairSummaryDto(
-             Long petFairId,
+             String petFairId,
              String title,
              String posterImageUrl,
              Instant startDate,
              Instant endDate,
-             String simpleAddress
+             String simpleAddress,
+             Integer pageNum
     ) {}
 
     public record PetFairDetailDto(
@@ -35,7 +38,7 @@ public final class PerFairQueryResponseDto {
     ) {}
 
     public record PetFairPosterSelectLimitDto(
-            Long id,
+            String id,
             String posterImageUrl
     ) {}
 }
