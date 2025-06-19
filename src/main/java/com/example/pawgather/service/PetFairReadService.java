@@ -32,7 +32,6 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -42,34 +41,13 @@ import java.util.Set;
 public class PetFairReadService implements PetFairReadUseCase {
 
     private final PetFairRedisRepository petFairRedisRepository;
+    private final PetFairReadRepository petFairReadRepository;
     private final PetFairReadMapper petFairReadMapper;
     private final PetFairQueryMapper petFairQueryMapper;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public List<PetFairSummaryDto> readPetFairs(PetFairSearchList petFairSearchList) {
-
-        Sort sort = "ASC".equalsIgnoreCase(petFairSearchList.sort())
-                ? Sort.by(Sort.Direction.ASC, "startDate")
-                : Sort.by(Sort.Direction.DESC, "startDate");
-
-        int pageNum = petFairSearchList.pageNumber() != null
-                ? Integer.parseInt(petFairSearchList.pageNumber())
-                : 0;
-
-        Pageable pageable = PageRequest.of(pageNum, 10, sort);
-
-        List<PetFairReadDto> dtos;
-
-        if (petFairSearchList.keyword() != null && !petFairSearchList.keyword().isEmpty()) {
-            dtos = petFairRedisRepository.findByTitleContaining(petFairSearchList.keyword(), pageable);
-        } else {
-            dtos = petFairRedisRepository.findAll(pageable).getContent();
-        }
-
-        return dtos.stream()
-                .map(petFairReadMapper::toSummaryDto)
-                .toList();
+        return petFairReadRepository.findPetFairList(petFairSearchList);
     }
 
     @Override
@@ -93,21 +71,7 @@ public class PetFairReadService implements PetFairReadUseCase {
         Instant start = searchMonthStartEnd.get(0);
         Instant end = searchMonthStartEnd.get(1);
 
-        // Redis Sorted Set 범위 조회 (score는 epoch milli)
-        Set<String> ids = redisTemplate.opsForZSet()
-                .rangeByScore("petfair:startDate", start.toEpochMilli(), end.toEpochMilli());
-        log.error(ids.toString());
-        log.info("start epoch millis: {}", start.toEpochMilli());
-        log.info("end epoch millis: {}", end.toEpochMilli());
-        if (ids == null || ids.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<PetFairReadDto> dtos = petFairRedisRepository.findAllById(ids);
-
-        return dtos.stream()
-                .map(petFairReadMapper::toSummaryDto)
-                .toList();
+        return petFairReadRepository.findMonthPetParis(start,end);
     }
 
 

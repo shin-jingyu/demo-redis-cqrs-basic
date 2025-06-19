@@ -10,13 +10,12 @@ public final class PerFairQueryResponseDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public record PetFairSummaryDto(
-             String petFairId,
+             Long petFairId,
              String title,
              String posterImageUrl,
              Instant startDate,
              Instant endDate,
-             String simpleAddress,
-             Integer pageNum
+             String simpleAddress
     ) {}
 
     public record PetFairDetailDto(

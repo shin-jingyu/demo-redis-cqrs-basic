@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PetFairReadMapper {
-
+    @Mapping(target = "id", expression = "java(String.valueOf(entity.getPetFairId()))")
     @Mapping(target = "images", expression = "java(toImageUrls(entity))")
     PetFairReadDto toDto(PetFair entity);
 

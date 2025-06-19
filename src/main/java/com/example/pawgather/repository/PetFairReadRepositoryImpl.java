@@ -1,6 +1,7 @@
 package com.example.pawgather.repository;
 
 import com.example.pawgather.controller.dto.PerFairQueryRequestDto.PetFairSearchList;
+import com.example.pawgather.controller.dto.PerFairQueryResponseDto;
 import com.example.pawgather.domain.entity.PetFairRead;
 import com.example.pawgather.domain.entity.QPetFairRead;
 import com.querydsl.core.types.OrderSpecifier;
@@ -22,9 +23,16 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
     QPetFairRead qPetFairRead = QPetFairRead.petFairRead;
 
     @Override
-    public List<PetFairRead> findMonthPetParis(Instant start, Instant end) {
+    public List<PerFairQueryResponseDto.PetFairSummaryDto> findMonthPetParis(Instant start, Instant end) {
         return queryFactory
-                .selectFrom(qPetFairRead)
+                .select(Projections.constructor(PerFairQueryResponseDto.PetFairSummaryDto.class,
+                        qPetFairRead.petFairId,
+                        qPetFairRead.title,
+                        qPetFairRead.posterImageUrl,
+                        qPetFairRead.startDate,
+                        qPetFairRead.endDate,
+                        qPetFairRead.simpleAddress))
+                .from(qPetFairRead)
                 .where(qPetFairRead.startDate.goe(start)
                         .and(qPetFairRead.startDate.lt(end)))
                 .fetch();
@@ -42,9 +50,9 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
     }
 
     @Override
-    public List<PetFairRead> findPetFairList(PetFairSearchList searchList) {
+    public List<PerFairQueryResponseDto.PetFairSummaryDto> findPetFairList(PetFairSearchList searchList) {
         return queryFactory
-                .select(Projections.constructor(PetFairRead.class,
+                .select(Projections.constructor(PerFairQueryResponseDto.PetFairSummaryDto.class,
                         qPetFairRead.petFairId,
                         qPetFairRead.title,
                         qPetFairRead.posterImageUrl,
@@ -72,16 +80,19 @@ public class PetFairReadRepositoryImpl implements PetFairReadRepositoryCustom {
             return null;
         }
 
-        return "ASC".equalsIgnoreCase(sort)
-                ? qPetFairRead.startDate.gt(cursorDate)
-                : qPetFairRead.startDate.lt(cursorDate);
+        if ("ASC".equalsIgnoreCase(sort)) {
+            return qPetFairRead.startDate.gt(cursorDate);
+        } else {
+            return qPetFairRead.startDate.lt(cursorDate);
+        }
     }
 
-
     private OrderSpecifier<?> sortCondition(String sort) {
-        return "ASC".equalsIgnoreCase(sort)
-                ? qPetFairRead.startDate.asc()
-                : qPetFairRead.startDate.desc();
+        if ("ASC".equalsIgnoreCase(sort)) {
+            return qPetFairRead.startDate.asc();
+        } else {
+            return qPetFairRead.startDate.desc();
+        }
     }
 
     private BooleanExpression keywordValue(String keyword) {

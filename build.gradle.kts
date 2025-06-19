@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven("https://oss.sonatype.org/content/repositories/snapshots")
 }
 
 
@@ -44,7 +45,8 @@ dependencies {
 	// db
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation ("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation("com.redis.om:redis-om-spring:0.9.11")
+//	implementation("com.redis.om:redis-om-spring:0.9.11")
+	implementation("com.redis.om:redis-om-spring:1.0.0-RC3")
 	implementation ("redis.clients:jedis")
 
 
